@@ -119,18 +119,47 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#
+# # On utilise le stockage simple pour éviter que WhiteNoise ne bloque le CSS
+# STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+#
+# # Configuration Cloudinary pour sauver les QR Codes
+# CLOUDINARY_STORAGE = {
+#     'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL')
+# }
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# MEDIA_URL = '/media/'
+#
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#
+# # Astuce de pro : Render fournit automatiquement 'RENDER_EXTERNAL_URL'.
+# # Si on est sur Render, le QR Code utilisera la vraie URL publique !
+# DOMAIN = os.getenv('RENDER_EXTERNAL_URL', 'http://127.0.0.1:8000')
+
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# On utilise le stockage simple pour éviter que WhiteNoise ne bloque le CSS
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 # Configuration Cloudinary pour sauver les QR Codes
 CLOUDINARY_STORAGE = {
     'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL')
 }
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# --- NOUVELLE GESTION DES FICHIERS (DJANGO 5+) ---
+# Remplace les anciens STATICFILES_STORAGE et DEFAULT_FILE_STORAGE
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.StaticFilesStorage",
+    },
+}
+
 MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
