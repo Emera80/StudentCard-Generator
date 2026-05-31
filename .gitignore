@@ -5,3 +5,12 @@ __pycache__/
 *.pyc
 /staticfiles/
 media/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.iml
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
