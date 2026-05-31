@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="card-page" class="card-page">
+  <h2 class="page-title">Carte d'étudiant</h2>
+
+  <div class="search-bar">
+    <input type="text" id="matriculeInput" class="form-control" placeholder="Entrer le numéro d'étudiant (matricule)">
+    <button type="button" class="btn-primary" onclick="rechercher()">Rechercher</button>
+    <button type="button" class="btn-secondary" onclick="triggerPhoto()">Télécharger une photo</button>
+    <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto()" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+  </div>
+
+  <div id="photoPreview" class="photo-preview" style="display:none;">
+    <img id="preview" src="#" alt="Aperçu de la photo">
+  </div>
+
+  <section id="carte" class="student-card" style="display:none;">
+    <header class="card-header">
+      <div class="card-logo">
+        <div class="logo-circle"><i class="fa-solid fa-school"></i></div>
+        <div class="card-uni">
+          <div class="card-uni-name">Université HIGHCARE KINSHASA</div>
+          <div class="card-uni-sub">Carte étudiante</div>
+        </div>
+      </div>
+      <div class="card-qr">
+        <img id="qrCode" src="" alt="QR Code">
+        <small>Scanner pour vérifier</small>
+      </div>
+    </header>
+
+    <div class="card-body">
+      <div class="info-column">
+        <div class="info-item"><span class="label">Numéro d'étudiant:</span><span class="value" id="matriculeValue"></span></div>
+        <div class="info-item"><span class="label">Nom:</span><span class="value" id="nom"></span></div>
+        <div class="info-item"><span class="label">Prénom:</span><span class="value" id="prenom"></span></div>
+        <div class="info-item"><span class="label">Nom postal:</span><span class="value" id="postnom"></span></div>
+        <div class="info-item"><span class="label">Sexe:</span><span class="value" id="sexe"></span></div>
+        <div class="info-item"><span class="label">Date de naissance:</span><span class="value" id="date_naissance"></span></div>
+        <div class="info-item"><span class="label">Lieu de naissance:</span><span class="value" id="lieu_naissance"></span></div>
+        <div class="info-item"><span class="label">Classe:</span><span class="value" id="promotion"></span></div>
+        <div class="info-item"><span class="label">Faculté:</span><span class="value" id="faculte"></span></div>
+        <div class="info-item"><span class="label">Section:</span><span class="value" id="section"></span></div>
+      </div>
+      <div class="photo-column">
+        <div class="photo-box">
+          <img id="photoEtudiant" src="" alt="Photo étudiant">
+        </div>
+      </div>
+    </div>
+
+    <footer class="card-footer">
+      <div class="signature-box">
+        <div class="signature-line"></div>
+        <div class="signature-label">Signature de l'étudiant</div>
+      </div>
+      <div class="signature-box">
+        <div class="signature-line"></div>
+        <div class="signature-label">Signature du superviseur</div>
+      </div>
+    </footer>
+  </section>
+
+  <button class="btn-primary no-print" onclick="imprimerCarte()">Imprimer la carte</button>
+</div>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="table-students" border="1">
+    <thead>
+        <tr>
+            <th>Matricule</th>
+            <th>Nom</th>
+            <th>Postnom</th>
+            <th>Prénom</th>
+            <th>Sexe</th>
+            <th>Date de naissance</th>
+            <th>Lieu de naissance</th>
+            <th>Promotion</th>
+            <th>Faculté</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for etudiant in etudiants %}
+        <tr>
+            <td>{{ etudiant.matricule }}</td>
+            <td>{{ etudiant.nom_etudiant }}</td>
+            <td>{{ etudiant.postnom_etudiant }}</td>
+            <td>{{ etudiant.prenom_etudiant }}</td>
+            <td>{{ etudiant.sexe }}</td>
+            <td>{{ etudiant.date_naissance }}</td>
+            <td>{{ etudiant.lieu_naissance }}</td>
+            <td>{{ etudiant.promotion }}</td>
+            <td>{{ etudiant.faculte }}</td>
+            <td class="actions">
+                <a href="{% url 'etudiant_edit' etudiant.matricule %}" class="action-link" title="Modifier">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+                <form method="post" action="{% url 'etudiant_delete' etudiant.matricule %}" style="display:inline" onsubmit="return confirm('Supprimer cet étudiant ?');">
+                    {% csrf_token %}
+                    <button type="submit" class="action-link action-delete" title="Supprimer">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10" style="text-align:center;">Aucun étudiant enregistré.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

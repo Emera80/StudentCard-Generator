@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="verification-result">
+    {% if is_valid %}
+        <h2 style="color: green;">✓ Carte étudiante valide</h2>
+        <div class="student-info">
+            <p><strong>Matricule:</strong> {{ etudiant.matricule }}</p>
+            <p><strong>Nom Complet:</strong> {{ etudiant.nom_etudiant }} {{ etudiant.postnom_etudiant }} {{ etudiant.prenom_etudiant }}</p>
+            <p><strong>Date de Naissance:</strong> {{ etudiant.date_naissance }}</p>
+            <p><strong>Lieu de Naissance:</strong> {{ etudiant.lieu_naissance }}</p>
+            <p><strong>Faculté:</strong> {{ etudiant.faculte.description_faculte }}</p>
+            <p><strong>Promotion:</strong> {{ etudiant.promotion.description_promotion }}</p>
+            <p><strong>Section:</strong> {{etudiant.faculte.section.description_section}}</p>
+            
+        </div>
+    {% else %}
+        <h2 style="color: red;">✗ Carte invalide</h2>
+        <p>{{ error }}</p>
+    {% endif %}
+</div>
+
+{% endblock %}

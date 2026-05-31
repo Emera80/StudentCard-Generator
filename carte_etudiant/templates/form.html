@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>{% if etudiant %}Modifier l'étudiant {{ etudiant.matricule }}{% else %}Ajouter un étudiant{% endif %}</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="id_matricule">Matricule</label>
+                    {{ form.matricule }}
+                    {% if form.matricule.errors %}<div class="error">{{ form.matricule.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_nom_etudiant">Nom</label>
+                    {{ form.nom_etudiant }}
+                    {% if form.nom_etudiant.errors %}<div class="error">{{ form.nom_etudiant.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_postnom_etudiant">Postnom</label>
+                    {{ form.postnom_etudiant }}
+                    {% if form.postnom_etudiant.errors %}<div class="error">{{ form.postnom_etudiant.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_prenom_etudiant">Prénom</label>
+                    {{ form.prenom_etudiant }}
+                    {% if form.prenom_etudiant.errors %}<div class="error">{{ form.prenom_etudiant.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_sexe">Sexe</label>
+                    {{ form.sexe }}
+                    {% if form.sexe.errors %}<div class="error">{{ form.sexe.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_date_naissance">Date de naissance</label>
+                    {{ form.date_naissance }}
+                    {% if form.date_naissance.errors %}<div class="error">{{ form.date_naissance.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_lieu_naissance">Lieu de naissance</label>
+                    {{ form.lieu_naissance }}
+                    {% if form.lieu_naissance.errors %}<div class="error">{{ form.lieu_naissance.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_faculte">Faculté</label>
+                    {{ form.faculte }}
+                    {% if form.faculte.errors %}<div class="error">{{ form.faculte.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_promotion">Promotion</label>
+                    {{ form.promotion }}
+                    {% if form.promotion.errors %}<div class="error">{{ form.promotion.errors }}</div>{% endif %}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">{% if etudiant %}Mettre à jour{% else %}Enregistrer{% endif %}</button>
+        </form>
+    </div>
+{% endblock %}

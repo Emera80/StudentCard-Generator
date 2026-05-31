@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Université HIGHCARE KINSHASA - Gestion Carte Étudiant{% endblock %}</title>
+    {% now 'U' as cache_bust %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ cache_bust }}">
+    <!-- Boxicons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">#}
+</head>
+<body>
+    <header>
+        <h1 class="base-h1">UNIVERSITE HIGHCARE KINSHASA - GESTION DES CARTES ETUDIANTES</h1>
+        <div class="base-menu">
+            <nav class="nav-container">
+                <div class="menu-container">
+                    <ul class="list-flex">
+                        <li class="list-item">
+                            <a href="{% url 'home' %}" class="list-link"><i class='bx  bx-home base-home-icon'></i><br> <span class="text-menu">Accueil</span> </a>
+                        </li>
+                        <li class="list-item">
+                            <a href="{% url 'etudiant_new' %}" class="list-link"><i class='bx  bx-user-plus base-home-icon'></i>
+                                <br> <span class="text-menu">Ajouter un étudiant</span> </a>
+
+                        </li>
+                        <li class="list-item">
+                            <a href="{% url 'etudiant_list' %}" class="list-link"><i class='bx  bx-user base-home-icon'></i>
+                                <br> <span class="text-menu">Liste des étudiants</span> </a>
+                        </li>
+                        <li class="list-item">
+                            <a href="{% url 'carte' %}" class="list-link"><i class='bx  bx-id-card base-home-icon'></i>
+                                <br> <span class="text-menu">Carte d'étudiant</span> </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Ici viendra le contenu de chaque page -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - Université HIGHCARE KINSHASA</p>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}?v={{ cache_bust }}"></script>
+
+</body>
+</html>
