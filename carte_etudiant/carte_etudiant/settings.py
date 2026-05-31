@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage', # <-- Ajouté ici
     'django.contrib.staticfiles',
+    'cloudinary_storage', # <-- Ajouté ici
     'cloudinary',         # <-- Ajouté ici
     'etudiants'
 ]
