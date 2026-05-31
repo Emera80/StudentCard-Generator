@@ -35,6 +35,9 @@ def generate_qr_code(sender, instance, created, **kwargs):
         # Sauvegarder l'image
         buffer = BytesIO()
         img.save(buffer, format='PNG')
+
+        # --- C'EST LA LIGNE QU'IL FAUT AJOUTER ICI ---
+        buffer.seek(0)
         
         # Nom du fichier
         file_name = f"qr_code_{instance.matricule}.png"
