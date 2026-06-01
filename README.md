@@ -64,8 +64,8 @@ def generate_qr_code(sender, instance, created, **kwargs):
 
 ### 1. Clonage et Dépendances
 ```bash
-git clone https://github.com/Emera80/carte_etudiant.git
-cd carte_etudiant
+git clone https://github.com/Emera80/StudentCard-Generator.git
+cd StudentCard-Generator
 pip install -r requirements.txt
 ```
 
@@ -98,5 +98,8 @@ En utilisant `buffer.seek(0)` après la sauvegarde de l'image dans le flux `Byte
 ## 👨‍💻 Auteur
 
 **Emera** — Étudiant en 2e Licence Informatique
+- Portefolio : [Mon Portefolio](https://lien_portefolio)
 - GitHub : [@Emera80](https://github.com/Emera80)
-- Projet axé sur la maîtrise des processus d'automatisation (Signaux Django), de la manipulation de flux de données et de la sécurisation des endpoints applicatifs.
+---
+
+*Projet axé sur la maîtrise des processus d'automatisation (Signaux Django), de la manipulation de flux de données et de la sécurisation des endpoints applicatifs.*
