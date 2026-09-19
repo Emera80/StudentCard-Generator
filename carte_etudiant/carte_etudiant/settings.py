@@ -183,17 +183,45 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-def _public_app_domain() -> str:
-    """URL publique de l'app (QR codes). Hugging Face définit SPACE_HOST automatiquement."""
+
+def _huggingface_space_origin() -> str | None:
+    """URL https://….hf.space déduite des variables injectées par Hugging Face Spaces."""
     space_host = os.getenv("SPACE_HOST", "").strip()
     if space_host:
         return f"https://{space_host}".rstrip("/")
+
+    space_id = os.getenv("SPACE_ID", "").strip()
+    if "/" in space_id:
+        author, repo = space_id.split("/", 1)
+        slug = f"{author}-{repo}".lower().replace("_", "-")
+        return f"https://{slug}.hf.space"
+
+    author = os.getenv("SPACE_AUTHOR_NAME", "").strip()
+    repo = os.getenv("SPACE_REPO_NAME", "").strip()
+    if author and repo:
+        slug = f"{author}-{repo}".lower().replace("_", "-")
+        return f"https://{slug}.hf.space"
+    return None
+
+
+def _normalize_origin(value: str) -> str:
+    origin = value.strip().rstrip("/")
+    if not origin:
+        return ""
+    if not origin.startswith(("http://", "https://")):
+        origin = f"https://{origin}"
+    return origin
+
+
+def _public_app_domain() -> str:
+    """URL publique de l'app (QR codes)."""
+    hf_origin = _huggingface_space_origin()
+    if hf_origin:
+        return hf_origin
     for key in ("PUBLIC_APP_URL", "HuggingFace_URL", "RENDER_EXTERNAL_URL"):
         value = os.getenv(key, "").strip()
         if value:
-            if not value.startswith(("http://", "https://")):
-                value = f"https://{value}"
-            return value.rstrip("/")
+            return _normalize_origin(value)
     return "http://127.0.0.1:8000"
 
 
@@ -202,19 +230,19 @@ DOMAIN = _public_app_domain()
 
 def _build_csrf_trusted_origins() -> list[str]:
     origins: list[str] = []
-    if DOMAIN.startswith(("http://", "https://")):
-        origins.append(DOMAIN)
-    space_host = os.getenv("SPACE_HOST", "").strip()
-    if space_host:
-        origins.append(f"https://{space_host}")
+
+    def add(value: str) -> None:
+        origin = _normalize_origin(value)
+        if origin and origin not in origins:
+            origins.append(origin)
+
+    add(DOMAIN)
+    hf_origin = _huggingface_space_origin()
+    if hf_origin:
+        add(hf_origin)
     for raw in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(","):
-        origin = raw.strip()
-        if not origin:
-            continue
-        if not origin.startswith(("http://", "https://")):
-            origin = f"https://{origin}"
-        origins.append(origin.rstrip("/"))
-    return list(dict.fromkeys(origins))
+        add(raw)
+    return origins
 
 
 CSRF_TRUSTED_ORIGINS = _build_csrf_trusted_origins()
@@ -223,7 +251,7 @@ CSRF_TRUSTED_ORIGINS = _build_csrf_trusted_origins()
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 
-_on_https = DOMAIN.startswith("https://") or bool(os.getenv("SPACE_HOST"))
+_on_https = DOMAIN.startswith("https://") or bool(_huggingface_space_origin())
 if _on_https:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
