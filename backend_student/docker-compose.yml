@@ -1,0 +1,25 @@
+# Projet Docker Compose : backend_student (StudentCard-Generator)
+# Distinct de STEG-PLATEFORME/backend (MySQL / steg_mysql).
+name: backend_student
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: backend_student_postgres
+    environment:
+      POSTGRES_DB: studentcard_db
+      POSTGRES_USER: studentcard_user
+      POSTGRES_PASSWORD: studentcard_dev_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - backend_student_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studentcard_user -d studentcard_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  backend_student_postgres_data:

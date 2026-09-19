@@ -23,7 +23,7 @@
 ## 🛠️ Stack Technique
 
 - **Backend** : Python 3.x, Django 5.x
-- **Base de données** : PostgreSQL (Production via Supabase/dj-database-url) / SQLite (Développement)
+- **Base de données** : PostgreSQL (Docker local `backend_student/` ou Supabase/Render en production)
 - **Librairies Graphiques** : `qrcode`, `Pillow`
 - **Gestion des Fichiers** : `Cloudinary` (Images), `WhiteNoise` (Fichiers statiques)
 - **Déploiement** : Render (Infrastructure managée)
@@ -66,20 +66,25 @@ def generate_qr_code(sender, instance, created, **kwargs):
 ```bash
 git clone https://github.com/Emera80/StudentCard-Generator.git
 cd StudentCard-Generator
-pip install -r requirements.txt
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r carte_etudiant/requirements.txt
 ```
 
-### 2. Variables d'Environnement
-Créez un fichier `.env` à la racine :
-```env
-SECRET_KEY=votre_cle_secrete
-DEBUG=True
-CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
-RENDER_EXTERNAL_URL=http://127.0.0.1:8000
-```
-
-### 3. Initialisation de la Base de Données
+### 2. PostgreSQL Docker (`backend_student`, pas le dossier `backend` STEG)
+Démarrer Docker Desktop, puis :
 ```bash
+cd backend_student
+docker compose up -d
+cd ..
+```
+
+### 3. Variables d'Environnement
+Copier `.env.example` en `.env` à la racine du dépôt et renseigner au minimum `SECRET_KEY` et `CLOUDINARY_URL`.
+
+### 4. Initialisation de la Base de Données
+```bash
+cd carte_etudiant
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver

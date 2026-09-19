@@ -13,17 +13,27 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+REPO_ROOT = BASE_DIR.parent
+
+load_dotenv(REPO_ROOT / ".env")
+load_dotenv(REPO_ROOT / "backend_student" / ".env")
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ImproperlyConfigured(
+        "SECRET_KEY manquant. Copiez .env.example en .env à la racine du dépôt."
+    )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
@@ -78,10 +88,19 @@ WSGI_APPLICATION = 'carte_etudiant.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Branchement magique vers Supabase en production, ou SQLite en local
+# Local : Postgres Docker (backend_student/). Prod : Neon / autre via DATABASE_URL.
+_default_db_url = (
+    "postgres://studentcard_user:studentcard_dev_password@127.0.0.1:5434/studentcard_db"
+)
+DATABASE_URL = os.getenv("DATABASE_URL", _default_db_url)
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+    "default": dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=DATABASE_URL.startswith(("postgres://", "postgresql://"))
+        and "localhost" not in DATABASE_URL
+        and "127.0.0.1" not in DATABASE_URL,
     )
 }
 
@@ -164,6 +183,18 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Astuce de pro : Render fournit automatiquement 'RENDER_EXTERNAL_URL'.
-# Si on est sur Render, le QR Code utilisera la vraie URL publique !
-DOMAIN = os.getenv('RENDER_EXTERNAL_URL', 'http://127.0.0.1:8000')
+def _public_app_domain() -> str:
+    """URL publique de l'app (QR codes). Hugging Face définit SPACE_HOST automatiquement."""
+    space_host = os.getenv("SPACE_HOST", "").strip()
+    if space_host:
+        return f"https://{space_host}".rstrip("/")
+    for key in ("PUBLIC_APP_URL", "HuggingFace_URL", "RENDER_EXTERNAL_URL"):
+        value = os.getenv(key, "").strip()
+        if value:
+            if not value.startswith(("http://", "https://")):
+                value = f"https://{value}"
+            return value.rstrip("/")
+    return "http://127.0.0.1:8000"
+
+
+DOMAIN = _public_app_domain()
