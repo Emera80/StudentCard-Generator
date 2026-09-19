@@ -198,3 +198,32 @@ def _public_app_domain() -> str:
 
 
 DOMAIN = _public_app_domain()
+
+
+def _build_csrf_trusted_origins() -> list[str]:
+    origins: list[str] = []
+    if DOMAIN.startswith(("http://", "https://")):
+        origins.append(DOMAIN)
+    space_host = os.getenv("SPACE_HOST", "").strip()
+    if space_host:
+        origins.append(f"https://{space_host}")
+    for raw in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(","):
+        origin = raw.strip()
+        if not origin:
+            continue
+        if not origin.startswith(("http://", "https://")):
+            origin = f"https://{origin}"
+        origins.append(origin.rstrip("/"))
+    return list(dict.fromkeys(origins))
+
+
+CSRF_TRUSTED_ORIGINS = _build_csrf_trusted_origins()
+
+# Hugging Face / Render : HTTPS terminé au proxy, Django voit souvent HTTP en amont.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+_on_https = DOMAIN.startswith("https://") or bool(os.getenv("SPACE_HOST"))
+if _on_https:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
